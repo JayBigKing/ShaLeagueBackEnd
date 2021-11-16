@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shaleaguebackend.mapper.ScoreMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.shaleaguebackend.model.domain.Score">
+        <id column="SCid" property="SCid" />
+        <result column="Pid" property="Pid" />
+        <result column="Sid" property="Sid" />
+        <result column="score" property="score" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayListEntryDTO">
+        <result column="Pid" property="Pid" />
+        <result column="name" property="name" />
+        <result column="score" property="score" />
+        <result column="totalWin" property="totalWin" />
+        <result column="totalLose" property="totalLose" />
+        <result column="total" property="total" />
+    </resultMap>
+
+    <select id = "listPage" resultMap="BaseResultMap2">
+        SELECT pnr4.`name`,pnr4.Pid,s0.score,pnr4.totalWin as totalWin,pnr4.totalLose as totalLose, pnr4.total
+        FROM
+            Score s0
+                ,
+            (
+                SELECT pnr2.`name`,pnr2.Pid,pnr2.Sid,pnr2.totalWin as totalWin,pnr3.totalLose as totalLose, (pnr2.totalWin + pnr3.totalLose) as total
+                FROM
+                    (
+                        SELECT pnr1.`name`,pnr1.Pid,sum(pnr1.haveOne) as totalWin,pnr1.Sid
+                        FROM
+                            (
+                                SELECT pn1.`name`,pn1.Pid,if(r1.Rid is  null ,0,1) as 'haveOne',pn1.Sid
+                                FROM
+                                    (
+                                        SELECT *
+                                        FROM Player p1,nowSeason ns1
+                                    )pn1
+                                        LEFT JOIN
+                                    (
+                                        SELECT r0.RTheRole,r0.Pid,r0.Sid,r0.Rid
+                                        FROM Role r0
+                                        WHERE r0.Rresult = 1
+                                    )r1
+                                    ON pn1.Pid = r1.Pid and pn1.Sid = r1.Sid
+                            )pnr1
+                        GROUP BY pnr1.Pid,pnr1.Sid
+                    )pnr2
+                        LEFT JOIN
+
+                    (
+                        SELECT pnr1.Pid,sum(haveOne) as totalLose
+                        FROM
+                            (
+                                SELECT pn1.`name`,pn1.Pid,if(r1.Rid is  null ,0,1) as 'haveOne'
+                                FROM
+                                    (
+                                        SELECT *
+                                        FROM Player p1,nowSeason ns1
+                                    )pn1
+                                        LEFT JOIN
+                                    (
+                                        SELECT r0.RTheRole,r0.Pid,r0.Sid,r0.Rid
+                                        FROM Role r0
+                                        WHERE r0.Rresult = 0
+                                    )r1
+
+                                    ON pn1.Pid = r1.Pid and pn1.Sid = r1.Sid
+                            )pnr1
+                        GROUP BY pnr1.Pid
+                    )
+                        pnr3
+                    ON pnr2.Pid = pnr3.Pid
+            )pnr4
+        WHERE pnr4.Pid = s0.Pid and pnr4.Sid = s0.Sid
+    </select>
+
+
+</mapper>

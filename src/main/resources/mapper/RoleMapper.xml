@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shaleaguebackend.mapper.RoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.shaleaguebackend.model.domain.Role">
+        <id column="Rid" property="Rid" />
+        <result column="Mid" property="Mid" />
+        <result column="Pid" property="Pid" />
+        <result column="Sid" property="Sid" />
+        <result column="RTheRole" property="RTheRole" />
+        <result column="Rresult" property="Rresult" />
+    </resultMap>
+
+</mapper>
