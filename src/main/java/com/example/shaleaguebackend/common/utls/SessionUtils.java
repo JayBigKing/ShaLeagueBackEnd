@@ -9,16 +9,21 @@ import javax.servlet.http.HttpSession;
 public class SessionUtils {
     private static final String USERKEY = "sessionUser";
 
-    public static HttpSession session() {
+    public static HttpSession session(boolean create) {
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        return attr.getRequest().getSession(true); // true == allow create
+        return attr.getRequest().getSession(create); // true == allow create
     }
+    public static HttpSession session(){return session(true);}
 
     public static Admin getCurrentUserInfo() {
         return (Admin) session().getAttribute(USERKEY);
     }
 
     public static void saveCurrentUserInfo(Admin admin) {
-        session().setAttribute(USERKEY, admin);
+        session(false).setAttribute(USERKEY, admin);
+    }
+
+    public static void deleteCurrentUserInfo() {
+        session().invalidate();
     }
 }

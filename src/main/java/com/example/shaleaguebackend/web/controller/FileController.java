@@ -34,10 +34,10 @@ public class FileController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity<Map<String, String>> upload(MultipartFile file, HttpServletRequest request) throws IOException {
         Map<String, String> map = new HashMap();
-        if (SecurityUtils.getCurrentUserInfo() == null) {
-            map.put("message", "请登录后重试");
-            return ResponseEntity.badRequest().body(map);
-        }
+//        if (SecurityUtils.getCurrentUserInfo() == null) {
+//            map.put("message", "请登录后重试");
+//            return ResponseEntity.badRequest().body(map);
+//        }
         map = fileService.upload(file);
         return ResponseEntity.ok().body(map);
     }

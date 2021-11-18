@@ -1,6 +1,7 @@
 package com.example.shaleaguebackend.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.shaleaguebackend.model.MyTime.MyTimeHelp;
 import com.example.shaleaguebackend.model.domain.*;
 import com.example.shaleaguebackend.model.dto.MatchShaDTOs.MatchShaDTO;
 import com.example.shaleaguebackend.model.dto.RoleDTOs.RoleFrontDTO;
@@ -95,8 +96,10 @@ public class MatchShaController {
         RoleScoreMap roleScoreMap = roleScoreMapService.getRoleScoreMap();
         MatchSha matchSha = new MatchSha();
         //matchSha.getMdate();
+        matchSha.setMdate(MyTimeHelp.getNowDateTime());
         matchSha.setSid(nowSeason.getSid());
         matchSha.setPid(Long.parseLong(matchShaDTO.getWinner()));
+
         matchShaService.save(matchSha);
 
         for(RoleFrontDTO item : matchShaDTO.getRoles()){
@@ -114,7 +117,7 @@ public class MatchShaController {
             roleService.save(role);
 
             //更新积分
-            updateScoreAfterMatchSha(nowSeason.getSid(),Long.parseLong(item.getId()),item.getTheRole(),item.getResult(),roleScoreMap);
+            updateScoreAfterMatchSha(nowSeason.getSid(),Long.parseLong(item.getId()),item.getTheRole(),item.getResult(),roleScoreMap,item.getGivenScore());
 
 
 
@@ -139,11 +142,12 @@ public class MatchShaController {
         return JsonResponse.success(null);
     }
 
-    void updateScoreAfterMatchSha(Long Sid, Long Pid , int theRole , int result , RoleScoreMap roleScoreMap){
+    void updateScoreAfterMatchSha(Long Sid, Long Pid , int theRole , int result , RoleScoreMap roleScoreMap , int givenScore){
 
         QueryWrapper<Score> wrapper = new QueryWrapper<>();
         wrapper.eq("Pid",Pid).eq("Sid",Sid);
         Score score  = scoreService.getOne(wrapper);
+        if(givenScore == -1)
         switch (theRole){
             case 0:
                 score.setScore(score.getScore() + roleScoreMap.getLordScore() * result);
@@ -157,7 +161,10 @@ public class MatchShaController {
             case 3:
                 score.setScore(score.getScore() + roleScoreMap.getTraitorScore() * result);
                 break;
+            default:break;
         }
+        else
+            score.setScore(score.getScore() + givenScore);
         scoreService.updateById(score);
 
     }

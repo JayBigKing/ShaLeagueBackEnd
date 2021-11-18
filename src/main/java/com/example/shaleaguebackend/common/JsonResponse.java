@@ -55,7 +55,7 @@ public class JsonResponse<R> implements Serializable {
         response.code = code;
         return response;
     }
-    public static <R> JsonResponse<R> failure(int code,String message) {
+    public static <R> JsonResponse<R> failure(String message,int code) {
         return message(code,false, message);
     }
     public JsonResponse<R> setOtherData(Map<String, Object> otherData) {

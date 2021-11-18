@@ -7,4 +7,5 @@ public class RoleFrontDTO {
     String id;
     int theRole;
     int result;
+    int givenScore;
 }
