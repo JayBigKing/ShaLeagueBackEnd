@@ -39,6 +39,7 @@ public class Admin extends Model<Admin> {
 
     private String password;
 
+
     @TableField("lastLoginTime")
     private LocalDateTime lastLoginTime;
 

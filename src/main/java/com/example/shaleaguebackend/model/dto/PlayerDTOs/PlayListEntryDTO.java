@@ -1,13 +1,16 @@
 package com.example.shaleaguebackend.model.dto.PlayerDTOs;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data
 public class PlayListEntryDTO {
-    private String name;
-    private Long Pid;
-    private int score;
-    private int totalWin ;
-    private int totalLose ;
-    private int total;
+    protected String name;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    protected Long Pid;
+    protected int score;
+    protected double win;
+    protected int totalWin ;
+    protected int totalLose ;
+    protected int total;
 }

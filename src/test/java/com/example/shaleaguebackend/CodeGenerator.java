@@ -186,7 +186,7 @@ public class CodeGenerator {
         strategy.setSuperControllerClass("com.example.shaleaguebackend.common.BaseController");
         strategy.setEntityLombokModel(true);//启用lombok注解
         strategy.setChainModel(true);//启用lombok链式注解
-        strategy.setInclude("PlayerImage","EnterQuestion");
+        strategy.setInclude("PlayerImage");
         //strategy.setInclude("MatchSha","nowSeason","Player","Role","RoleScoreMap","Score","Season");
        //strategy.setTablePrefix("caps_");//去表前缀配置
 

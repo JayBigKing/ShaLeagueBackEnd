@@ -36,7 +36,7 @@ public class SecurityUtils {
             userInfoDTO.setName("模拟用户");
             userInfoDTO.setUserType(1L);
         }else{
-            userInfoDTO.setId(1L);
+            userInfoDTO.setId(userInfo.getId());
             userInfoDTO.setName("模拟用户");
             userInfoDTO.setUserType(1L);
         }

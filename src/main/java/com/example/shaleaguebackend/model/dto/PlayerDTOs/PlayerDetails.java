@@ -41,6 +41,9 @@ public class PlayerDetails {
             allWinProbability = -1;
             allLoseProbability = -1;
         }
+        map.put("allTimes",playerWInLoseCountDTO.getTotal());
+        map.put("allWinTimes",playerWInLoseCountDTO.getTotalWin());
+        map.put("allLoseTimes",playerWInLoseCountDTO.getTotalLose());
         map.put("allWinProbability",allWinProbability);
         map.put("allLoseProbability",allLoseProbability);
 
@@ -51,6 +54,9 @@ public class PlayerDetails {
             lordWinProbability = -1;
             lordLoseProbability = -1;
         }
+        map.put("lordTimes",playerLordCountDTO.getTotal());
+        map.put("lordWinTimes",playerLordCountDTO.getTotalRoleWin());
+        map.put("lordLoseTimes",playerLordCountDTO.getTotalRoleLose());
         map.put("lordWinProbability",lordWinProbability);
         map.put("lordLoseProbability",lordLoseProbability);
 
@@ -61,6 +67,9 @@ public class PlayerDetails {
             courtierWinProbability = -1;
             courtierLoseProbability = -1;
         }
+        map.put("courtierTimes",playerCourtierCountDTO.getTotal());
+        map.put("courtierWinTimes",playerCourtierCountDTO.getTotalRoleWin());
+        map.put("courtierLoseTimes",playerCourtierCountDTO.getTotalRoleLose());
         map.put("courtierWinProbability",courtierWinProbability);
         map.put("courtierLoseProbability",courtierLoseProbability);
 
@@ -71,6 +80,9 @@ public class PlayerDetails {
             rebelWinProbability = -1;
             rebelLoseProbability = -1;
         }
+        map.put("rebelTimes",playerRebelCountDTO.getTotal());
+        map.put("rebelWinTimes",playerRebelCountDTO.getTotalRoleWin());
+        map.put("rebelLoseTimes",playerRebelCountDTO.getTotalRoleLose());
         map.put("rebelWinProbability",rebelWinProbability);
         map.put("rebelLoseProbability",rebelLoseProbability);
 
@@ -80,6 +92,9 @@ public class PlayerDetails {
         }else{
             traitorWinProbability = traitorLoseProbability = -1;
         }
+        map.put("traitorTimes",playerTraitorCountDTO.getTotal());
+        map.put("traitorWinTimes",playerTraitorCountDTO.getTotalRoleWin());
+        map.put("traitorLoseTimes",playerTraitorCountDTO.getTotalRoleLose());
         map.put("traitorWinProbability",traitorWinProbability);
         map.put("traitorLoseProbability",traitorLoseProbability);
 

@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.example.shaleaguebackend.model.domain.PlayerImage">
-        <result column="Sid" property="Sid" />
+        <result column="Pid" property="Pid" />
         <result column="imgUrl" property="imgUrl" />
     </resultMap>
 

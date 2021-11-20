@@ -1,7 +1,12 @@
 package com.example.shaleaguebackend.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.shaleaguebackend.model.domain.*;
+import com.example.shaleaguebackend.model.dto.MatchShaDTOs.ScoreAloneDTO;
 import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayListEntryDTO;
+import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayListEntryWithImgDTO;
+import com.example.shaleaguebackend.service.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -9,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.shaleaguebackend.common.JsonResponse;
-import com.example.shaleaguebackend.service.ScoreService;
-import com.example.shaleaguebackend.model.domain.Score;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,18 @@ public class ScoreController {
     @Autowired
     private ScoreService scoreService;
 
+    @Autowired
+    private PlayerImageService playerImageService;
+
+    @Autowired
+    private RoleScoreMapService roleScoreMapService;
+
+    @Autowired
+    private MatchShaService matchShaService;
+
+    @Autowired
+    private RoleService roleService;
+
     private static final int defaultCurrentPage = 1;
     private static final int defaultPageSize = 20;
 
@@ -47,6 +62,16 @@ public class ScoreController {
     public JsonResponse getById(@PathVariable("id") Long id)throws Exception {
         Score  score =  scoreService.getById(id);
         return JsonResponse.success(score);
+    }
+
+    /**
+     * 描述：根据Id 查询
+     *
+     */
+    @RequestMapping(value = "getByPid/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse getByPid(@PathVariable("id") Long id)throws Exception {
+        return JsonResponse.success(scoreService.getByPid(id));
     }
 
 
@@ -94,17 +119,53 @@ public class ScoreController {
     }
 
 
+    /**
+     * 描述:创建Score
+     *
+     */
+    @RequestMapping(value = "/createByMid", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse createByMid(@RequestBody ScoreAloneDTO scoreAloneDTO) throws Exception {
+        RoleScoreMap roleScoreMap = roleScoreMapService.getRoleScoreMap();
+        MatchSha matchSha =  matchShaService.getById(Long.parseLong(scoreAloneDTO.getMid()));
+        Role role = new Role();
+        role.setPid(Long.parseLong(scoreAloneDTO.getId()));
+        role.setMid(matchSha.getMid());
+        role.setSid(matchSha.getSid());
+        role.setRTheRole(scoreAloneDTO.getTheRole());
+        if(scoreAloneDTO.getResult() == 0)
+            role.setRresult(Boolean.FALSE);
+        else
+            role.setRresult(Boolean.TRUE);
+
+        roleService.save(role);
+
+        scoreService.updateScoreAfterMatchSha(matchSha.getSid(),Long.parseLong(scoreAloneDTO.getId()),scoreAloneDTO.getTheRole(),scoreAloneDTO.getResult(),roleScoreMap,scoreAloneDTO.getGivenScore());
+        if(scoreAloneDTO.getResult() == 1 && (matchSha.getPid() == null)){
+            matchSha.setPid(Long.parseLong(scoreAloneDTO.getId()));
+            matchShaService.updateById(matchSha);
+        }
+        return JsonResponse.success(null);
+    }
+
     private Map<String, Object> listPage(int currentPage, int pageSize){
         Page<PlayListEntryDTO> page = (Page<PlayListEntryDTO>) scoreService.listPage(currentPage,pageSize);
         List<PlayListEntryDTO> list = page.getRecords();
+        PlayListEntryWithImgDTO[] playListEntryWithImgDTOs = new PlayListEntryWithImgDTO[list.size()];
         Map<String,Object>map = new HashMap<>();
-        map.put("data",list);
+//        map.put("data",list);
         map.put("totalData",page.getTotal());
         map.put("current",page.getCurrent());
         map.put("totalPages",page.getPages());
         map.put("pageSize",page.getSize());
         map.put("hasPrevious",page.hasPrevious());
         map.put("hasNext",page.hasNext());
+        for(int i = 0 ; i<list.size();i++){
+            PlayerImage playerImage = playerImageService.getByPid(list.get(i).getPid());
+            playListEntryWithImgDTOs[i] = new PlayListEntryWithImgDTO();
+            playListEntryWithImgDTOs[i].setItselt(list.get(i),playerImage.getImgUrl());
+        }
+        map.put("data",playListEntryWithImgDTOs);
         return map;
     }
     /*

@@ -1,7 +1,9 @@
 package com.example.shaleaguebackend.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.shaleaguebackend.model.domain.Player;
 import com.example.shaleaguebackend.mapper.PlayerMapper;
+import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayListEntryDTO;
 import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayerRolesCountDTO;
 import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayerWInLoseCountDTO;
 import com.example.shaleaguebackend.model.enums.RolesEnum;
@@ -30,6 +32,11 @@ public class PlayerServiceImpl extends ServiceImpl<PlayerMapper, Player> impleme
     @Override
     public PlayerRolesCountDTO getRolesDetailById(Long id, RolesEnum theLord) {
         return playerMapper.getRoleDetailById(id,theLord.ordinal());
+    }
+
+    @Override
+    public Page<Player> listPageByName(String name, int currentPage, int pageSize) {
+        return playerMapper.listPageByName(name,new Page<Player>(currentPage,pageSize));
     }
 
 }

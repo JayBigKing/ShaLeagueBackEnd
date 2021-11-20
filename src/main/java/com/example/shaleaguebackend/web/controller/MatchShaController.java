@@ -117,7 +117,7 @@ public class MatchShaController {
             roleService.save(role);
 
             //更新积分
-            updateScoreAfterMatchSha(nowSeason.getSid(),Long.parseLong(item.getId()),item.getTheRole(),item.getResult(),roleScoreMap,item.getGivenScore());
+            scoreService.updateScoreAfterMatchSha(nowSeason.getSid(),Long.parseLong(item.getId()),item.getTheRole(),item.getResult(),roleScoreMap,item.getGivenScore());
 
 
 
@@ -142,31 +142,47 @@ public class MatchShaController {
         return JsonResponse.success(null);
     }
 
-    void updateScoreAfterMatchSha(Long Sid, Long Pid , int theRole , int result , RoleScoreMap roleScoreMap , int givenScore){
-
-        QueryWrapper<Score> wrapper = new QueryWrapper<>();
-        wrapper.eq("Pid",Pid).eq("Sid",Sid);
-        Score score  = scoreService.getOne(wrapper);
-        if(givenScore == -1)
-        switch (theRole){
-            case 0:
-                score.setScore(score.getScore() + roleScoreMap.getLordScore() * result);
-                break;
-            case 1:
-                score.setScore(score.getScore() + roleScoreMap.getCourtierScore() * result);
-                break;
-            case 2:
-                score.setScore(score.getScore() + roleScoreMap.getRebelScore() * result);
-                break;
-            case 3:
-                score.setScore(score.getScore() + roleScoreMap.getTraitorScore() * result);
-                break;
-            default:break;
-        }
-        else
-            score.setScore(score.getScore() + givenScore);
-        scoreService.updateById(score);
-
+    /**
+     * 描述:创建MatchSha
+     *
+     */
+    @RequestMapping(value = "/createOnlyOneMatchSha", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse createOnlyOneMatchSha() throws Exception{
+        NowSeason nowSeason = nowSeasonService.getNowSeason();
+        MatchSha matchSha = new MatchSha();
+        //matchSha.getMdate();
+        matchSha.setMdate(MyTimeHelp.getNowDateTime());
+        matchSha.setSid(nowSeason.getSid());
+        matchShaService.save(matchSha);
+        return JsonResponse.success(matchSha);
     }
+
+//    void updateScoreAfterMatchSha(Long Sid, Long Pid , int theRole , int result , RoleScoreMap roleScoreMap , int givenScore){
+//
+//        QueryWrapper<Score> wrapper = new QueryWrapper<>();
+//        wrapper.eq("Pid",Pid).eq("Sid",Sid);
+//        Score score  = scoreService.getOne(wrapper);
+//        if(givenScore == -1)
+//        switch (theRole){
+//            case 0:
+//                score.setScore(score.getScore() + roleScoreMap.getLordScore() * result);
+//                break;
+//            case 1:
+//                score.setScore(score.getScore() + roleScoreMap.getCourtierScore() * result);
+//                break;
+//            case 2:
+//                score.setScore(score.getScore() + roleScoreMap.getRebelScore() * result);
+//                break;
+//            case 3:
+//                score.setScore(score.getScore() + roleScoreMap.getTraitorScore() * result);
+//                break;
+//            default:break;
+//        }
+//        else
+//            score.setScore(score.getScore() + givenScore);
+//        scoreService.updateById(score);
+//
+//    }
 }
 

@@ -1,5 +1,8 @@
 package com.example.shaleaguebackend.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.shaleaguebackend.model.domain.Player;
+import com.example.shaleaguebackend.model.domain.Score;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -17,7 +20,7 @@ import com.example.shaleaguebackend.model.domain.PlayerImage;
  *
  *
  * @author jay
- * @since 2021-11-17
+ * @since 2021-11-18
  * @version v1.0
  */
 @Controller
@@ -41,6 +44,20 @@ public class PlayerImageController {
     }
 
     /**
+     * 描述：根据Id 查询
+     *
+     */
+    @RequestMapping(value = "/getByPid/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse getByPid(@PathVariable("id") Long id)throws Exception {
+//        QueryWrapper<PlayerImage> wrapper = new QueryWrapper<>();
+//        wrapper.eq("Pid",id);
+//        PlayerImage playerImage  = playerImageService.getOne(wrapper);
+        return JsonResponse.success(playerImageService.getByPid(id));
+    }
+
+
+    /**
     * 描述：根据Id删除
     *
     */
@@ -52,7 +69,17 @@ public class PlayerImageController {
     }
 
 
-
+    /**
+    * 描述：根据Id 更新
+    *
+    */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public JsonResponse updatePlayerImage(@PathVariable("id") Long  id,PlayerImage  playerImage) throws Exception {
+        playerImage.setPid(id);
+        playerImageService.updateById(playerImage);
+        return JsonResponse.success(null);
+    }
 
 
     /**

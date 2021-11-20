@@ -153,4 +153,14 @@
                 pnr3
             ON pnr2.Pid = pnr3.Pid
     </select>
+
+    <select id = "listPageByName" resultMap="BaseResultMap">
+    select *
+    from Player
+    <where>
+        <if test = "name != null and name != '' and !name.equals('')">
+            name like '%${name}%'
+        </if>
+    </where>
+    </select>
 </mapper>

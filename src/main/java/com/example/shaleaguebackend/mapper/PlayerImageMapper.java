@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author jay
- * @since 2021-11-17
+ * @since 2021-11-18
  */
 public interface PlayerImageMapper extends BaseMapper<PlayerImage> {
 

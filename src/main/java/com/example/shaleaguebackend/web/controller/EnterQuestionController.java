@@ -2,7 +2,9 @@ package com.example.shaleaguebackend.web.controller;
 
 import com.example.shaleaguebackend.common.Judge;
 import com.example.shaleaguebackend.common.utls.SessionUtils;
+import com.example.shaleaguebackend.model.ErrorAbout.ErrorMap;
 import com.example.shaleaguebackend.model.domain.Admin;
+import org.apache.ibatis.jdbc.Null;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.example.shaleaguebackend.common.JsonResponse;
 import com.example.shaleaguebackend.service.EnterQuestionService;
 import com.example.shaleaguebackend.model.domain.EnterQuestion;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -110,18 +113,15 @@ public class EnterQuestionController {
                 long  t = System.currentTimeMillis(); //获得当前时间的毫秒数
                 r.setSeed(t);
                 Admin admin = new Admin();
-                admin.setOnlyId(Long.parseLong("-1"));
-
-
-                sessionUtils.saveCurrentUserInfo(admin);                                    //存储用户信息到Session中
-                System.out.println(admin.getId());
-                //Admin             userInfo = SessionUtils.getCurrentUserInfo();
+                Long randVal = r.nextLong();
+                admin.setOnlyId((randVal > 0)?randVal:-randVal);
                 sessionUtils.session(true);
-
+                sessionUtils.saveCurrentUserInfo(admin);                                    //存储用户信息到Session中
+                //Admin             userInfo = SessionUtils.getCurrentUserInfo();
             }
             return JsonResponse.success(null);
         }else{
-            return JsonResponse.failure("回答错误",550);
+            return JsonResponse.failure("回答错误", ErrorMap.getErrorCode("回答错误"));
         }
 
     }

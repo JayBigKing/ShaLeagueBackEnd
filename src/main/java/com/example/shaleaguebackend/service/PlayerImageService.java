@@ -9,8 +9,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author jay
- * @since 2021-11-17
+ * @since 2021-11-18
  */
 public interface PlayerImageService extends IService<PlayerImage> {
 
+    PlayerImage getByPid(Long id);
 }

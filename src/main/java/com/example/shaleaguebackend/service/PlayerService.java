@@ -1,7 +1,9 @@
 package com.example.shaleaguebackend.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.shaleaguebackend.model.domain.Player;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayListEntryDTO;
 import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayerRolesCountDTO;
 import com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayerWInLoseCountDTO;
 import com.example.shaleaguebackend.model.enums.RolesEnum;
@@ -21,4 +23,6 @@ public interface PlayerService extends IService<Player> {
 
 
     PlayerRolesCountDTO getRolesDetailById(Long id, RolesEnum theLord);
+
+    Page<Player> listPageByName(String name, int currentPage, int pageSize);
 }

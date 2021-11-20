@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author jay
- * @since 2021-11-17
+ * @since 2021-11-18
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,8 +27,8 @@ public class PlayerImage extends Model<PlayerImage> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableField("Sid")
-    private Long Sid;
+    @TableField("Pid")
+    private Long Pid;
 
     @TableField("imgUrl")
     private String imgUrl;
