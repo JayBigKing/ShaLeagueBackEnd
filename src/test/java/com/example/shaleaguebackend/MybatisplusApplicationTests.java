@@ -1,7 +1,9 @@
 package com.example.shaleaguebackend;
 
 import com.example.shaleaguebackend.model.domain.Admin;
+import com.example.shaleaguebackend.model.domain.RoleScoreMap;
 import com.example.shaleaguebackend.service.AdminService;
+import com.example.shaleaguebackend.service.RoleScoreMapService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,11 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MybatisplusApplicationTests {
 
     @Autowired
-    private AdminService adminService;
+    private RoleScoreMapService roleScoreMapService;
     @Test
     void contextLoads() {
-        Admin byId = adminService.getById(1);
-        System.out.println(byId);
+        RoleScoreMap roleScoreMap = roleScoreMapService.getRoleScoreMap();
+        System.out.println(roleScoreMap.getLordScore());
     }
 
 }
