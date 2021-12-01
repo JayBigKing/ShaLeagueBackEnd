@@ -27,10 +27,18 @@ public class FileServiceImpl implements FileService {
     @Value("${file-upload-path}")
     private String fileUploadPath;
 
+    private final String theImgFilePath = "./file/image/";
+
     @Override
     public Map upload(MultipartFile file) throws IOException {
         Map<String, String> map = storeFile(file, Paths.get(fileUploadPath, "image").toString());
         return map;
+    }
+
+    @Override
+    public boolean deleteFile(String fileStrEnd) {
+        File file = new File(theImgFilePath+fileStrEnd);
+        return file.delete();
     }
 
     private static Map<String, String> storeFile(MultipartFile file, String fileUploadPath) throws IOException {

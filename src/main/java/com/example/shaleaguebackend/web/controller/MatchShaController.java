@@ -48,6 +48,9 @@ public class MatchShaController {
     @Autowired
     private ScoreService scoreService;
 
+    @Autowired
+    private MroleService mroleService;
+
     RolesEnum rolesEnum;
     /**
     * 描述：根据Id 查询
@@ -105,6 +108,7 @@ public class MatchShaController {
         for(RoleFrontDTO item : matchShaDTO.getRoles()){
             //添加role
             Role role = new Role();
+            Mrole mrole = new Mrole();
             role.setPid(Long.parseLong(item.getId()));
             role.setMid(matchSha.getMid());
             role.setSid(nowSeason.getSid());
@@ -115,6 +119,12 @@ public class MatchShaController {
                 role.setRresult(Boolean.TRUE);
 
             roleService.save(role);
+
+            if(item.getMgid() != null && !item.getMgid().equals("")){
+                mrole.setRid(role.getRid());
+                mrole.setMGid(Long.parseLong(item.getMgid()));
+                mroleService.save(mrole);
+            }
 
             //更新积分
             scoreService.updateScoreAfterMatchSha(nowSeason.getSid(),Long.parseLong(item.getId()),item.getTheRole(),item.getResult(),roleScoreMap,item.getGivenScore());

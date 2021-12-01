@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface PlayerImageService extends IService<PlayerImage> {
 
     PlayerImage getByPid(Long id);
+
+    boolean updateByPid(PlayerImage playerImage);
 }

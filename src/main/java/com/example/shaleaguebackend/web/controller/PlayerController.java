@@ -2,6 +2,7 @@ package com.example.shaleaguebackend.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.shaleaguebackend.model.ErrorAbout.ErrorMap;
 import com.example.shaleaguebackend.model.domain.NowSeason;
 import com.example.shaleaguebackend.model.domain.PlayerImage;
 import com.example.shaleaguebackend.model.domain.Score;
@@ -56,7 +57,7 @@ public class PlayerController {
 
     RolesEnum rolesEnum;
 
-    private static final String defaultImgSrc = "image/202111/default.png";
+    private static final String defaultImgSrc = "202111/default.png";
 
     private static final int defaultCurrentPage = 1;
     private static final int defaultPageSize = 20;
@@ -154,6 +155,36 @@ public class PlayerController {
         if(imgSrc == null || imgSrc.equals(""))
             imgSrc = defaultImgSrc;
         createOnePlayer(player,imgSrc);
+        return JsonResponse.success(null);
+    }
+
+    /**
+     * 描述:修改Player
+     *
+     */
+    @RequestMapping(value = "/renew", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse renew(@RequestBody Map<String, Object> models) throws Exception {
+
+        String imgSrc = (String) models.get("imgSrc");
+        Long thePid = Long.parseLong((String) models.get("pid"));
+        String theName = (String) models.get("pname");
+
+
+        Player  player =  playerService.getById(thePid);
+        PlayerImage playerImage = playerImageService.getByPid(thePid);
+
+
+        if(theName != null && !theName.equals(""))
+            player.setName(theName);
+        if(imgSrc != null && !imgSrc.equals(""))
+            playerImage.setImgUrl(imgSrc);
+        if(player == null)
+            return JsonResponse.failure("没有这个id", ErrorMap.getErrorCode("没有这个id"));
+
+        playerService.updateById(player);
+        playerImageService.updateByPid(playerImage);
+
         return JsonResponse.success(null);
     }
 

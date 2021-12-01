@@ -1,15 +1,15 @@
 package com.example.shaleaguebackend.web.controller;
 
 
+import com.example.shaleaguebackend.common.JsonResponse;
 import com.example.shaleaguebackend.common.utls.SecurityUtils;
+import com.example.shaleaguebackend.model.ErrorAbout.ErrorMap;
 import com.example.shaleaguebackend.service.FileService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +40,15 @@ public class FileController {
 //        }
         map = fileService.upload(file);
         return ResponseEntity.ok().body(map);
+    }
+
+    @ApiOperation(value = "文件删除", notes = "文件删除")
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public JsonResponse deleteFile(@RequestBody Map<String, Object> models) throws IOException {
+        if(fileService.deleteFile((String) models.get("fileStrEnd")) == true)
+            return JsonResponse.success(null);
+        else
+            return JsonResponse.failure("没有这个文件", ErrorMap.getErrorCode("没有这个文件"));
     }
 
     private static String suffix(String fileName) {

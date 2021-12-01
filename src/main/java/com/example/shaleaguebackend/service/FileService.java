@@ -10,4 +10,5 @@ public interface FileService {
 
     Map upload(MultipartFile file) throws IOException;
 
+    boolean deleteFile(String fileStrEnd);
 }
