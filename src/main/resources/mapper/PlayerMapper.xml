@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shaleaguebackend.mapper.PlayerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.shaleaguebackend.model.domain.Player">
+        <id column="Pid" property="Pid" />
+        <result column="name" property="name" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayerWInLoseCountDTO">
+        <result column="Pid" property="Pid" />
+        <result column="name" property="name" />
+        <result column="totalWin" property="totalWin" />
+        <result column="totalLose" property="totalLose" />
+        <result column="total" property="total" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap3" type="com.example.shaleaguebackend.model.dto.PlayerDTOs.PlayerRolesCountDTO">
+        <result column="Pid" property="Pid" />
+        <result column="name" property="name" />
+        <result column="totalWin" property="totalRoleWin" />
+        <result column="totalLose" property="totalRoleLose" />
+        <result column="total" property="total" />
+    </resultMap>
+    <sql id = "win_lose_col">
+        name,Pid,totalWin,totalLose,total
+    </sql>
+
+    <select id = "getWinLoseDetailById" resultMap="BaseResultMap2">
+        SELECT pnr2.`name`,pnr2.Pid,pnr2.totalWin as totalWin,pnr3.totalLose as totalLose, (pnr2.totalWin + pnr3.totalLose) as total
+        FROM
+        (
+        SELECT pnr1.`name`,pnr1.Pid,sum(pnr1.haveOne) as totalWin
+        FROM
+        (
+        SELECT pn1.`name`,pn1.Pid,if(r1.Rid is  null ,0,1) as 'haveOne'
+        FROM
+        (
+        SELECT *
+        FROM Player p1,nowSeason ns1
+        <where>
+        <if test = "id != null and id != ''">
+        and p1.Pid = #{id}
+        </if>
+        </where>
+        )pn1
+        LEFT JOIN
+        (
+        SELECT r0.RTheRole,r0.Pid,r0.Sid,r0.Rid
+        FROM Role r0
+        WHERE r0.Rresult = 1
+        )r1
+        ON pn1.Pid = r1.Pid and pn1.Sid = r1.Sid
+        )pnr1
+        GROUP BY pnr1.Pid
+        )pnr2
+        LEFT JOIN
+
+        (
+        SELECT pnr1.Pid,sum(haveOne) as totalLose
+        FROM
+        (
+        SELECT pn1.`name`,pn1.Pid,if(r1.Rid is  null ,0,1) as 'haveOne'
+        FROM
+        (
+        SELECT *
+        FROM Player p1,nowSeason ns1
+        <where>
+            <if test = "id != null and id != ''">
+                and p1.Pid = #{id}
+            </if>
+        </where>
+        )pn1
+        LEFT JOIN
+        (
+        SELECT r0.RTheRole,r0.Pid,r0.Sid,r0.Rid
+        FROM Role r0
+        WHERE r0.Rresult = 0
+        )r1
+
+        ON pn1.Pid = r1.Pid and pn1.Sid = r1.Sid
+        )pnr1
+        GROUP BY pnr1.Pid
+        )
+        pnr3
+        ON pnr2.Pid = pnr3.Pid
+    </select>
+
+    <select id = "getRoleDetailById" resultMap="BaseResultMap3">
+        SELECT pnr2.`name` as name,pnr2.Pid as Pid,pnr2.totalWin as totalWin,pnr3.totalLose as totalLose, (pnr2.totalWin + pnr3.totalLose) as total
+        FROM
+            (
+                SELECT pnr1.`name`,pnr1.Pid,sum(pnr1.haveOne) as totalWin
+                FROM
+                    (
+                        SELECT pn1.`name`,pn1.Pid,if(r1.Rid is  null ,0,1) as 'haveOne'
+                        FROM
+                            (
+                                SELECT *
+                                FROM Player p1,nowSeason ns1
+                        <where>
+                            <if test = "id != null and id != ''">
+                                and p1.Pid = #{id}
+                            </if>
+                        </where>
+                            )pn1
+                                LEFT JOIN
+                            (
+                                SELECT r0.RTheRole,r0.Pid,r0.Sid,r0.Rid
+                                FROM Role r0
+                                <where>
+                                    r0.Rresult = 1
+                                    and r0.RTheRole = #{theLord}
+                                </where>
+                            )r1
+                            ON pn1.Pid = r1.Pid and pn1.Sid = r1.Sid
+                    )pnr1
+                GROUP BY pnr1.Pid
+            )pnr2
+                LEFT JOIN
+
+            (
+                SELECT pnr1.Pid,sum(haveOne) as totalLose
+                FROM
+                    (
+                        SELECT pn1.`name`,pn1.Pid,if(r1.Rid is  null ,0,1) as 'haveOne'
+                        FROM
+                            (
+                                SELECT *
+                                FROM Player p1,nowSeason ns1
+                            <where>
+                                <if test = "id != null and id != ''">
+                                    and p1.Pid = #{id}
+                                </if>
+                            </where>
+                            )pn1
+                                LEFT JOIN
+                            (
+                                SELECT r0.RTheRole,r0.Pid,r0.Sid,r0.Rid
+                                FROM Role r0
+                                <where>
+                                    r0.Rresult = 0
+                                        and
+                                    r0.RTheRole = #{theLord}
+                                </where>
+                            )r1
+
+                            ON pn1.Pid = r1.Pid and pn1.Sid = r1.Sid
+                    )pnr1
+                GROUP BY pnr1.Pid
+            )
+                pnr3
+            ON pnr2.Pid = pnr3.Pid
+    </select>
+
+    <select id = "listPageByName" resultMap="BaseResultMap">
+    select *
+    from Player
+    <where>
+        <if test = "name != null and name != '' and !name.equals('')">
+            name like '%${name}%'
+        </if>
+    </where>
+    </select>
+</mapper>
